@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MAISON KHAN</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Orbitron:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #080808;
+      --gold: #9C7C5C;
+      --gold-light: #C4A882;
+      --cream: #EDE8E1;
+      --gray: #B8B4AE;
+      --dark-gray: #6B6560;
+      --smoke: #2A2520;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      background: var(--black);
+      color: #fff;
+      min-height: 100vh;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); }
+
+    /* ══════════════════════════════════════
+       CURSOR GOLD TRAIL
+    ══════════════════════════════════════ */
+    .cursor-glow {
+      position: fixed;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      background: radial-gradient(circle, rgba(156,124,92,0.06) 0%, transparent 70%);
+      transform: translate(-50%, -50%);
+      transition: left 0.6s ease-out, top 0.6s ease-out;
+    }
+
+    /* ══════════════════════════════════════
+       PRELOADER
+    ══════════════════════════════════════ */
+    .preloader {
+      position: fixed; inset: 0; z-index: 10000;
+      background: var(--black);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 2rem;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+    .preloader.hidden { opacity: 0; visibility: hidden; }
+
+    .preloader-text {
+      font-size: 1.1rem; letter-spacing: 0.5em;
+      color: var(--gold); font-weight: 300;
+    }
+    .preloader-bar {
+      width: 80px; height: 1px;
+      background: rgba(156,124,92,0.2);
+      position: relative; overflow: hidden;
+    }
+    .preloader-bar::after {
+      content: ''; position: absolute;
+      left: -100%; top: 0; width: 100%; height: 100%;
+      background: var(--gold);
+      animation: loadBar 1.8s ease-in-out infinite;
+    }
+    @keyframes loadBar {
+      0%   { left: -100%; }
+      50%  { left: 0; }
+      100% { left: 100%; }
+    }
+
+    /* ══════════════════════════════════════
+       GRAIN
+    ══════════════════════════════════════ */
+    .grain {
+      position: fixed; inset: 0; z-index: 9000;
+      pointer-events: none; opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 256px;
+    }
+
+    /* ══════════════════════════════════════
+       VIGNETTE
+    ══════════════════════════════════════ */
+    .vignette {
+      position: fixed; inset: 0; z-index: 8999;
+      pointer-events: none;
+      background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.5) 100%);
+    }
+
+    /* ══════════════════════════════════════
+       HERO
+    ══════════════════════════════════════ */
+    .hero {
+      position: relative;
+      height: 100vh; width: 100%;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+
+    /* ── Background Gradient Animation ── */
+    .gradient-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      overflow: hidden;
+      background: #080808;
+    }
+
+    .gradient-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      mix-blend-mode: screen;
+      will-change: transform;
+    }
+
+    /* Orb 1 — grand, gold profond */
+    .orb-1 {
+      width: 70vmax; height: 70vmax;
+      top: -20%; left: -15%;
+      background: radial-gradient(circle, rgba(156,124,92,0.35) 0%, rgba(156,124,92,0) 70%);
+      animation: orbMove1 18s ease-in-out infinite;
+    }
+    /* Orb 2 — moyen, or clair */
+    .orb-2 {
+      width: 55vmax; height: 55vmax;
+      bottom: -25%; right: -10%;
+      background: radial-gradient(circle, rgba(196,168,130,0.3) 0%, rgba(196,168,130,0) 70%);
+      animation: orbMove2 22s ease-in-out infinite;
+    }
+    /* Orb 3 — petit, crème chaud */
+    .orb-3 {
+      width: 40vmax; height: 40vmax;
+      top: 30%; right: 15%;
+      background: radial-gradient(circle, rgba(237,232,225,0.15) 0%, rgba(237,232,225,0) 70%);
+      animation: orbMove3 15s ease-in-out infinite;
+    }
+    /* Orb 4 — accent fumé */
+    .orb-4 {
+      width: 50vmax; height: 50vmax;
+      bottom: 10%; left: 20%;
+      background: radial-gradient(circle, rgba(42,37,32,0.5) 0%, rgba(42,37,32,0) 70%);
+      animation: orbMove4 25s ease-in-out infinite;
+    }
+    /* Orb 5 — doré vif, petit */
+    .orb-5 {
+      width: 30vmax; height: 30vmax;
+      top: 60%; left: 50%;
+      background: radial-gradient(circle, rgba(156,124,92,0.25) 0%, rgba(156,124,92,0) 65%);
+      animation: orbMove5 20s ease-in-out infinite;
+    }
+
+    @keyframes orbMove1 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25%      { transform: translate(15vw, 10vh) scale(1.1); }
+      50%      { transform: translate(5vw, 25vh) scale(0.95); }
+      75%      { transform: translate(-10vw, 15vh) scale(1.05); }
+    }
+    @keyframes orbMove2 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25%      { transform: translate(-12vw, -8vh) scale(1.08); }
+      50%      { transform: translate(-20vw, 5vh) scale(0.92); }
+      75%      { transform: translate(-5vw, -15vh) scale(1.12); }
+    }
+    @keyframes orbMove3 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33%      { transform: translate(-18vw, 12vh) scale(1.15); }
+      66%      { transform: translate(8vw, -10vh) scale(0.9); }
+    }
+    @keyframes orbMove4 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      20%      { transform: translate(10vw, -12vh) scale(1.05); }
+      40%      { transform: translate(20vw, 5vh) scale(0.95); }
+      60%      { transform: translate(5vw, 15vh) scale(1.1); }
+      80%      { transform: translate(-8vw, -5vh) scale(0.98); }
+    }
+    @keyframes orbMove5 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      30%      { transform: translate(-15vw, -20vh) scale(1.2); }
+      60%      { transform: translate(10vw, -8vh) scale(0.85); }
+    }
+
+    /* Subtle noise overlay on gradient */
+    .gradient-noise {
+      position: absolute; inset: 0;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px;
+      mix-blend-mode: overlay;
+      pointer-events: none;
+    }
+
+    .hero-gradient {
+      position: absolute; inset: 0;
+      z-index: 2;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 50%, rgba(8,8,8,0.1) 0%, rgba(8,8,8,0.6) 100%),
+        linear-gradient(180deg, rgba(8,8,8,0.8) 0%, rgba(8,8,8,0.1) 30%, rgba(8,8,8,0.1) 70%, rgba(8,8,8,0.85) 100%);
+    }
+
+    .hero-content {
+      position: relative; z-index: 10;
+      text-align: center;
+      display: flex; flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    .ornament {
+      display: flex; align-items: center; gap: 1.2rem;
+      opacity: 0;
+      animation: fadeScale 1.2s 2.8s ease-out forwards;
+    }
+    .ornament .line-h {
+      width: 50px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold));
+    }
+    .ornament .line-h:last-child {
+      background: linear-gradient(90deg, var(--gold), transparent);
+    }
+    .ornament .dot {
+      width: 4px; height: 4px; background: var(--gold);
+      transform: rotate(45deg);
+    }
+    @keyframes fadeScale {
+      from { opacity: 0; transform: scale(0.8); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    .brand {
+      font-size: clamp(3rem, 10vw, 8rem);
+      font-weight: 300;
+      letter-spacing: 0.25em;
+      color: var(--cream);
+      line-height: 1;
+      margin-top: 2rem;
+      opacity: 0;
+      animation: brandReveal 1.5s 3s ease-out forwards;
+    }
+    @keyframes brandReveal {
+      0%   { opacity: 0; letter-spacing: 0.5em; filter: blur(8px); }
+      100% { opacity: 1; letter-spacing: 0.25em; filter: blur(0); }
+    }
+
+    .tagline {
+      font-size: clamp(0.6rem, 1.2vw, 0.8rem);
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 400;
+      margin-top: 1.5rem;
+      opacity: 0;
+      animation: revealUp 1s 3.5s ease-out forwards;
+    }
+
+    .ornament-bottom {
+      display: flex; align-items: center; gap: 1.2rem;
+      margin-top: 2.5rem;
+      opacity: 0;
+      animation: fadeScale 1.2s 3.8s ease-out forwards;
+    }
+
+    .hero-quote {
+      margin-top: 3rem;
+      text-align: center;
+      opacity: 0;
+      animation: revealUp 1.2s 4.2s ease-out forwards;
+    }
+
+    .quote-main {
+      font-size: clamp(1.05rem, 2.5vw, 1.5rem);
+      font-weight: 300; font-style: italic;
+      letter-spacing: 0.04em;
+      color: var(--gray);
+      line-height: 1.6;
+    }
+
+    .quote-sub {
+      font-size: clamp(0.8rem, 1.5vw, 1rem);
+      font-weight: 300;
+      letter-spacing: 0.05em;
+      color: var(--dark-gray);
+      margin-top: 0.5rem;
+      font-style: italic;
+    }
+
+    @keyframes revealUp {
+      0%   { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translate(-50%, 0);
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      text-align: center;
+    }
+    .scroll-indicator span {
+      font-size: 0.55rem; letter-spacing: 0.3em;
+      text-transform: uppercase; color: var(--dark-gray);
+    }
+
+    /* ══════════════════════════════════════
+       SECTION — COMING SOON / HORLOGE
+    ══════════════════════════════════════ */
+    .coming {
+      position: relative;
+      min-height: 90vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 6rem 2rem;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .coming::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 1px; height: 80px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+    }
+
+    .coming-content {
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── Horloge futuriste ── */
+    .clock-container {
+      position: relative;
+      width: clamp(300px, 55vw, 440px);
+      height: clamp(300px, 55vw, 440px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0;
+      transform: scale(0.7);
+      transition: all 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .clock-container.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .hud-corner {
+      position: absolute;
+      width: 24px; height: 24px;
+      z-index: 5;
+      opacity: 0.35;
+      transition: opacity 0.4s;
+    }
+    .clock-container.visible .hud-corner { opacity: 0.35; }
+    .clock-container:hover .hud-corner { opacity: 0.7; }
+    .hud-tl { top: 2px; left: 2px; border-top: 1px solid var(--gold); border-left: 1px solid var(--gold); }
+    .hud-tr { top: 2px; right: 2px; border-top: 1px solid var(--gold); border-right: 1px solid var(--gold); }
+    .hud-bl { bottom: 2px; left: 2px; border-bottom: 1px solid var(--gold); border-left: 1px solid var(--gold); }
+    .hud-br { bottom: 2px; right: 2px; border-bottom: 1px solid var(--gold); border-right: 1px solid var(--gold); }
+
+    .clock-rings {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+    }
+
+    .ring-rotate-cw {
+      animation: rotateCW 90s linear infinite;
+    }
+    .ring-rotate-ccw {
+      animation: rotateCCW 120s linear infinite;
+    }
+    @keyframes rotateCW  { to { transform: rotate(360deg); } }
+    @keyframes rotateCCW { to { transform: rotate(-360deg); } }
+
+    .clock-scan {
+      position: absolute;
+      width: 80%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(156,124,92,0.12), transparent);
+      animation: scanLine 5s ease-in-out infinite;
+      z-index: 4;
+      pointer-events: none;
+      left: 10%;
+    }
+    @keyframes scanLine {
+      0%, 100% { top: 15%; opacity: 0; }
+      5%  { opacity: 1; }
+      95% { opacity: 1; }
+      100% { top: 85%; opacity: 0; }
+    }
+
+    .clock-glow-pulse {
+      position: absolute;
+      inset: -30px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(156,124,92,0.04) 0%, transparent 65%);
+      animation: breathe 4s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+    @keyframes breathe {
+      0%, 100% { transform: scale(0.95); opacity: 0.4; }
+      50%      { transform: scale(1.15); opacity: 1; }
+    }
+
+    .clock-face {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .clock-label {
+      font-size: 0.5rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--dark-gray);
+      opacity: 0.7;
+    }
+
+    .clock-time {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      color: var(--cream);
+      text-shadow: 0 0 15px rgba(156,124,92,0.25), 0 0 40px rgba(156,124,92,0.08);
+      line-height: 1;
+    }
+
+    .clock-sep {
+      color: var(--gold);
+      animation: sepBlink 1s step-end infinite;
+      display: inline-block;
+      margin: 0 2px;
+    }
+    @keyframes sepBlink {
+      50% { opacity: 0.15; }
+    }
+
+    .clock-seconds-row {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-top: 0.2rem;
+    }
+
+    .clock-seconds-text {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(0.85rem, 2vw, 1.1rem);
+      font-weight: 300;
+      color: var(--gold);
+      letter-spacing: 0.15em;
+      min-width: 2.2em;
+      text-align: center;
+    }
+
+    .clock-seconds-dot {
+      width: 4px; height: 4px;
+      background: var(--gold);
+      border-radius: 50%;
+      opacity: 0.4;
+      animation: dotPulse 1s ease-in-out infinite;
+    }
+    @keyframes dotPulse {
+      0%, 100% { opacity: 0.2; transform: scale(0.8); }
+      50%      { opacity: 0.8; transform: scale(1.2); }
+    }
+
+    .clock-ms-bar {
+      width: 60px; height: 1px;
+      background: rgba(156,124,92,0.15);
+      position: relative;
+      overflow: hidden;
+      border-radius: 1px;
+    }
+    .clock-ms-bar-fill {
+      position: absolute;
+      left: 0; top: 0;
+      height: 100%;
+      background: var(--gold);
+      opacity: 0.5;
+      transition: width 0.05s linear;
+    }
+
+    .clock-date {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(0.55rem, 1vw, 0.65rem);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--dark-gray);
+      margin-top: 0.5rem;
+    }
+
+    .coming-text {
+      font-size: clamp(1.2rem, 3.2vw, 2rem);
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: var(--cream);
+      margin-top: 2.5rem;
+      animation: floatSoft 5s ease-in-out infinite;
+    }
+    @keyframes floatSoft {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-8px); }
+    }
+
+    .gold-shimmer {
+      position: absolute;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(156,124,92,0.08) 0%, transparent 70%);
+      filter: blur(40px);
+      animation: shimmerPulse 6s ease-in-out infinite;
+    }
+    @keyframes shimmerPulse {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50%      { transform: scale(1.3); opacity: 1; }
+    }
+
+    /* ══════════════════════════════════════
+       DIVIDER
+    ══════════════════════════════════════ */
+    .divider {
+      display: flex; align-items: center;
+      justify-content: center; gap: 0;
+      padding: 0 2rem;
+      opacity: 0;
+      transform: scaleX(0);
+      transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .divider.visible { opacity: 1; transform: scaleX(1); }
+
+    .divider-line { width: 60px; height: 1px; }
+    .divider-line:first-child { background: linear-gradient(90deg, transparent, var(--gold)); }
+    .divider-line:last-child  { background: linear-gradient(90deg, var(--gold), transparent); }
+    .divider-diamond {
+      width: 5px; height: 5px;
+      background: var(--gold);
+      transform: rotate(45deg);
+      margin: 0 1rem;
+    }
+
+    /* ══════════════════════════════════════
+       SECTION — ESSENCE
+    ══════════════════════════════════════ */
+    .essence {
+      padding: 5rem 2rem 6rem;
+      text-align: center;
+    }
+
+    .essence-inner {
+      max-width: 600px; margin: 0 auto;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .essence-inner.visible {
+      opacity: 1; transform: translateY(0);
+    }
+
+    .essence-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 2rem;
+    }
+
+    .essence-text {
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      font-weight: 300; font-style: italic;
+      line-height: 1.8;
+      color: var(--gray);
+    }
+
+    .essence-signature {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--dark-gray);
+      margin-top: 2rem;
+    }
+
+    /* ══════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════ */
+    footer {
+      padding: 3rem 2.5rem;
+      border-top: 1px solid rgba(156,124,92,0.08);
+    }
+
+    .footer-top {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 2rem;
+      max-width: 48rem; margin: 0 auto;
+    }
+
+    .footer-brand {
+      font-size: 0.8rem; letter-spacing: 0.4em;
+      color: var(--dark-gray); font-weight: 300;
+    }
+
+    .footer-links { display: flex; gap: 2.5rem; }
+
+    .footer-links a {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dark-gray);
+      text-decoration: none;
+      transition: color 0.4s;
+      position: relative;
+    }
+    .footer-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 50%;
+      width: 0; height: 1px;
+      background: var(--gold);
+      transition: all 0.4s ease;
+      transform: translateX(-50%);
+    }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-links a:hover::after { width: 100%; }
+
+    .footer-bottom { margin-top: 2rem; text-align: center; }
+    .footer-copy {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: rgba(107,101,96,0.5);
+    }
+
+    /* ══════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════ */
+    @media (min-width: 768px) {
+      .coming { min-height: 100vh; }
+      footer  { padding: 4rem; }
+    }
+    @media (min-width: 1024px) {
+      .footer-top { flex-direction: row; justify-content: space-between; }
+      .footer-bottom { text-align: right; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cursor glow -->
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <!-- Grain -->
+  <div class="grain"></div>
+
+  <!-- Vignette -->
+  <div class="vignette"></div>
+
+  <!-- Preloader -->
+  <div class="preloader" id="preloader">
+    <span class="preloader-text">MAISON KHAN</span>
+    <div class="preloader-bar"></div>
+  </div>
+
+  <!-- ═══════ HERO ═══════ -->
+  <section class="hero">
+    <!-- Background Gradient Animation -->
+    <div class="gradient-bg">
+      <div class="gradient-orb orb-1"></div>
+      <div class="gradient-orb orb-2"></div>
+      <div class="gradient-orb orb-3"></div>
+      <div class="gradient-orb orb-4"></div>
+      <div class="gradient-orb orb-5"></div>
+      <div class="gradient-noise"></div>
+    </div>
+
+    <!-- Dark vignette overlay to keep text readable -->
+    <div class="hero-gradient"></div>
+
+    <div class="hero-content">
+      <div class="ornament">
+        <div class="line-h"></div>
+        <div class="dot"></div>
+        <div class="line-h"></div>
+      </div>
+
+      <h1 class="brand">MAISON KHAN</h1>
+
+      <p class="tagline">L'art de la chaussure sur mesure</p>
+
+      <div class="ornament-bottom ornament">
+        <div class="line-h"></div>
+        <div class="dot"></div>
+        <div class="line-h"></div>
+      </div>
+
+      <div class="hero-quote">
+        <p class="quote-main">L'élégance n'a pas besoin de bruit.</p>
+        <p class="quote-sub">Avant même de voir… vous savez déjà.</p>
+      </div>
+    </div>
+
+    <div class="scroll-indicator">
+      <span>Défiler</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- DIVIDER -->
+  <div class="divider" data-reveal>
+    <div class="divider-line"></div>
+    <div class="divider-diamond"></div>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- ═══════ COMING SOON — HORLOGE ═══════ -->
+  <section class="coming">
+    <div class="gold-shimmer" style="top: 15%; left: 20%;"></div>
+    <div class="gold-shimmer" style="bottom: 15%; right: 15%; animation-delay: 3s;"></div>
+
+    <div class="coming-content">
+      <div class="clock-container" data-reveal>
+
+        <div class="hud-corner hud-tl"></div>
+        <div class="hud-corner hud-tr"></div>
+        <div class="hud-corner hud-bl"></div>
+        <div class="hud-corner hud-br"></div>
+
+        <div class="clock-scan"></div>
+        <div class="clock-glow-pulse"></div>
+
+        <svg class="clock-rings" viewBox="0 0 400 400" id="clockSvg">
+          <defs>
+            <filter id="glowGold" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="glowDot" x="-100%" y="-100%" width="300%" height="300%">
+              <feGaussianBlur stdDeviation="5" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <circle cx="200" cy="200" r="192" fill="none" stroke="rgba(156,124,92,0.07)" stroke-width="0.5"/>
+          <circle cx="200" cy="200" r="162" fill="none" stroke="rgba(156,124,92,0.05)" stroke-width="0.5"/>
+          <circle cx="200" cy="200" r="132" fill="none" stroke="rgba(156,124,92,0.03)" stroke-width="0.5"/>
+
+          <g class="ring-rotate-cw" style="transform-origin:200px 200px">
+            <circle cx="200" cy="200" r="177" fill="none" stroke="rgba(156,124,92,0.1)" stroke-width="0.5" stroke-dasharray="3 14"/>
+          </g>
+          <g class="ring-rotate-ccw" style="transform-origin:200px 200px">
+            <circle cx="200" cy="200" r="147" fill="none" stroke="rgba(156,124,92,0.07)" stroke-width="0.5" stroke-dasharray="2 18"/>
+          </g>
+
+          <g id="clockTicks"></g>
+
+          <circle id="arcSeconds" cx="200" cy="200" r="187" fill="none" stroke="#9C7C5C" stroke-width="2" stroke-linecap="round" transform="rotate(-90 200 200)" filter="url(#glowGold)"/>
+          <circle id="arcMinutes" cx="200" cy="200" r="172" fill="none" stroke="#C4A882" stroke-width="1" stroke-linecap="round" opacity="0.3" transform="rotate(-90 200 200)"/>
+          <circle id="arcHours"   cx="200" cy="200" r="157" fill="none" stroke="#EDE8E1" stroke-width="0.5" stroke-linecap="round" opacity="0.12" transform="rotate(-90 200 200)"/>
+
+          <circle id="orbitDot"    cx="200" cy="13" r="3"   fill="#9C7C5C" filter="url(#glowDot)"/>
+          <circle id="orbitDotMin" cx="200" cy="28" r="1.5" fill="#C4A882" opacity="0.5"/>
+        </svg>
+
+        <div class="clock-face">
+          <div class="clock-label">Heure locale</div>
+          <div class="clock-time">
+            <span id="clockHours">00</span><span class="clock-sep">:</span><span id="clockMinutes">00</span>
+          </div>
+          <div class="clock-seconds-row">
+            <span class="clock-seconds-text" id="clockSeconds">00</span>
+            <span class="clock-seconds-dot"></span>
+            <div class="clock-ms-bar">
+              <div class="clock-ms-bar-fill" id="clockMsBar"></div>
+            </div>
+          </div>
+          <div class="clock-date" id="clockDate">—</div>
+        </div>
+
+      </div>
+
+      <p class="coming-text">Bientôt, la vitrine digitale s'ouvre.</p>
+    </div>
+  </section>
+
+  <!-- DIVIDER -->
+  <div class="divider" data-reveal>
+    <div class="divider-line"></div>
+    <div class="divider-diamond"></div>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- ESSENCE -->
+  <section class="essence">
+    <div class="essence-inner" data-reveal>
+      <p class="essence-label">Notre promesse</p>
+      <p class="essence-text">
+        Chaque paire est une déclaration. Un savoir-faire transmis, une peau sélectionnée,
+        une forme pensée pour celui qui la porte.
+      </p>
+      <p class="essence-signature">— Maison Khan</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-top">
+      <span class="footer-brand">MAISON KHAN</span>
+      <div class="footer-links">
+        <a href="#">Instagram</a>
+        <a href="#">Facebook</a>
+        <a href="#">TikTok</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">&copy; 2025 Maison Khan. Tous droits réservés.</span>
+    </div>
+  </footer>
+
+  <script>
+    // ── Preloader ──
+    window.addEventListener('load', function () {
+      setTimeout(function () {
+        document.getElementById('preloader').classList.add('hidden');
+      }, 2200);
+    });
+
+    // ── Cursor glow (desktop only) ──
+    var glow = document.getElementById('cursorGlow');
+    if (window.matchMedia('(pointer: fine)').matches) {
+      document.addEventListener('mousemove', function (e) {
+        glow.style.left = e.clientX + 'px';
+        glow.style.top  = e.clientY + 'px';
+      });
+    } else {
+      glow.style.display = 'none';
+    }
+
+    // ── Scroll reveal ──
+    var reveals = document.querySelectorAll('[data-reveal]');
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    reveals.forEach(function (el) { observer.observe(el); });
+
+    // ══════════════════════════════════════
+    //  HORLOGE FUTURISTE
+    // ══════════════════════════════════════
+    (function () {
+      var CX = 200, CY = 200;
+      var TICK_OUTER = 193;
+      var TICK_MINOR_INNER = 187;
+      var TICK_MAJOR_INNER = 181;
+      var R_SEC = 187, R_MIN = 172, R_HR = 157;
+
+      var circSec = 2 * Math.PI * R_SEC;
+      var circMin = 2 * Math.PI * R_MIN;
+      var circHr  = 2 * Math.PI * R_HR;
+
+      // Generate tick marks
+      var ticksGroup = document.getElementById('clockTicks');
+      for (var i = 0; i < 60; i++) {
+        var angle = (i * 6) * Math.PI / 180;
+        var isMajor = (i % 5 === 0);
+        var innerR = isMajor ? TICK_MAJOR_INNER : TICK_MINOR_INNER;
+
+        var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', CX + innerR * Math.sin(angle));
+        line.setAttribute('y1', CY - innerR * Math.cos(angle));
+        line.setAttribute('x2', CX + TICK_OUTER * Math.sin(angle));
+        line.setAttribute('y2', CY - TICK_OUTER * Math.cos(angle));
+        line.setAttribute('stroke', '#9C7C5C');
+        line.setAttribute('stroke-width', isMajor ? '1.5' : '0.5');
+        line.setAttribute('opacity', isMajor ? '0.5' : '0.18');
+        ticksGroup.appendChild(line);
+      }
+
+      // Cache elements
+      var elH   = document.getElementById('clockHours');
+      var elM   = document.getElementById('clockMinutes');
+      var elS   = document.getElementById('clockSeconds');
+      var elMs  = document.getElementById('clockMsBar');
+      var elD   = document.getElementById('clockDate');
+      var aSec  = document.getElementById('arcSeconds');
+      var aMin  = document.getElementById('arcMinutes');
+      var aHr   = document.getElementById('arcHours');
+      var dSec  = document.getElementById('orbitDot');
+      var dMin  = document.getElementById('orbitDotMin');
+
+      aSec.setAttribute('stroke-dasharray', circSec);
+      aMin.setAttribute('stroke-dasharray', circMin);
+      aHr.setAttribute('stroke-dasharray',  circHr);
+
+      var days   = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+      var months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+
+      function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+      var lastDateStr = '';
+
+      function tick() {
+        var now = new Date();
+        var h  = now.getHours();
+        var m  = now.getMinutes();
+        var s  = now.getSeconds();
+        var ms = now.getMilliseconds();
+
+        var secP = (s + ms / 1000) / 60;
+        var minP = (m + (s + ms / 1000) / 60) / 60;
+        var hrP  = ((h % 12) + m / 60) / 12;
+
+        aSec.setAttribute('stroke-dashoffset', circSec * (1 - secP));
+        aMin.setAttribute('stroke-dashoffset', circMin * (1 - minP));
+        aHr.setAttribute('stroke-dashoffset',  circHr  * (1 - hrP));
+
+        var sa = secP * 2 * Math.PI - Math.PI / 2;
+        dSec.setAttribute('cx', CX + R_SEC * Math.cos(sa));
+        dSec.setAttribute('cy', CY + R_SEC * Math.sin(sa));
+
+        var ma = minP * 2 * Math.PI - Math.PI / 2;
+        dMin.setAttribute('cx', CX + R_MIN * Math.cos(ma));
+        dMin.setAttribute('cy', CY + R_MIN * Math.sin(ma));
+
+        elH.textContent = pad(h);
+        elM.textContent = pad(m);
+        elS.textContent = pad(s);
+        elMs.style.width = ms + '%';
+
+        var ds = days[now.getDay()] + ' ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+        if (ds !== lastDateStr) { elD.textContent = ds; lastDateStr = ds; }
+
+        requestAnimationFrame(tick);
+      }
+
+      requestAnimationFrame(tick);
+    })();
+
+    // ══════════════════════════════════════
+    //  GRADIENT MOUSE INTERACTION
+    // ══════════════════════════════════════
+    (function () {
+      var hero      = document.querySelector('.hero');
+      var gradientBg = document.querySelector('.gradient-bg');
+      var orbs       = document.querySelectorAll('.gradient-orb');
+
+      if (!hero || !gradientBg) return;
+
+      // Subtle parallax on orbs when mouse moves
+      hero.addEventListener('mousemove', function (e) {
+        var rect  = hero.getBoundingClientRect();
+        var x     = (e.clientX - rect.left) / rect.width  - 0.5;  // -0.5 to 0.5
+        var y     = (e.clientY - rect.top)  / rect.height - 0.5;
+
+        orbs.forEach(function (orb, i) {
+          var factor = (i + 1) * 8; // each orb reacts differently
+          orb.style.marginLeft = (x * factor) + 'px';
+          orb.style.marginTop  = (y * factor) + 'px';
+        });
+      });
+
+      hero.addEventListener('mouseleave', function () {
+        orbs.forEach(function (orb) {
+          orb.style.marginLeft = '0px';
+          orb.style.marginTop  = '0px';
+          orb.style.transition = 'margin 0.8s ease-out';
+          setTimeout(function () { orb.style.transition = ''; }, 800);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
